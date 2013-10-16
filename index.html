@@ -1,12 +1,37 @@
 <!doctype html>
 <html>
   <head>
+    <script src='https://cdn.firebase.com/v0/firebase.js'></script>
+    <script src='http://codeorigin.jquery.com/jquery-1.10.2.min.js'></script>
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/2.3.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="main.css">
+    <style type="text/css">
+      #output {
+        background-color: #999;
+      }
+    </style>
   </head>
   <body>
     <div class="container">
       <h1 class="page-header">Noise and Haste</h1>
+      <input type='text' id='nameInput' placeholder='Name'>
+      <input type='text' id='messageInput' placeholder='Message'>
+      <ul class="unstyled" id="output"></ul>
+      <script>
+        var fb = new Firebase('https://evanboho.firebaseio.com/');
+        $('#messageInput').keypress(function (e) {
+          if (e.keyCode == 13) {
+            var name = $('#nameInput').val();
+            var text = $('#messageInput').val();
+            fb.push({'name': name, 'text': text});
+            $('#messageInput').val('');
+          }
+        });
+        fb.on('child_added', function(ss) {
+          obj = ss.val()
+          $('#output').append('<li>' + obj.name + ': ' + obj.text + '</li>');
+        });
+      </script>
     </div>
   </body>
 </html>
